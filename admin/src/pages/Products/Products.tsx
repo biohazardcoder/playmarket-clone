@@ -31,6 +31,7 @@ export const Products = () => {
   const { data, isPending, isError } = useSelector(
     (state: { products: { data: Product[]; isPending: boolean; isError: string } }) => state.products
   );
+  console.log(data);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

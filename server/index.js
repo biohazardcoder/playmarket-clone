@@ -3,49 +3,59 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import multer from "multer";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 import AdminRoutes from "./routes/admin.js";
 import ProductRoutes from "./routes/product.js";
 import ClientRoutes from "./routes/client.js";
+
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-const uploadDir = path.join(process.cwd(), 'uploads');
+const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
-  destination: (a, b, cb) => {
-    cb(null, "uploads");
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
   },
-  filename: (a, file, cb) => {
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
 });
 
 const upload = multer({ storage });
 
-app.use("/uploads", express.static("uploads"));
+app.post("/upload", upload.fields([{ name: "photos", maxCount: 10 }, { name: "file", maxCount: 1 }]), async (req, res) => {
+  if (!req.files || (!req.files.photos && !req.files.file)) {
+    return res.status(400).json({ message: "Fayllar yuklanmadi!" });
+  }
 
-app.post("/upload", upload.array("photos"), async (req, res) => {
-  const uploadedImages = req.files.map(
-    (file) => `http://localhost:4000/uploads/${file.filename}`
-  );
+  const uploadedPhotos = req.files.photos
+    ? req.files.photos.map((file) => `http://localhost:4000/uploads/${file.filename}`)
+    : [];
+
+  const uploadedFile = req.files.file
+    ? `http://localhost:4000/uploads/${req.files.file[0].filename}`
+    : null;
+
   res.status(200).json({
-    message: "Изображения успешно загружены!",
-    photos: uploadedImages,
+    message: "Fayllar muvaffaqiyatli yuklandi!",
+    photos: uploadedPhotos,
+    file: uploadedFile,
   });
-  console.log("Successfully send a image")
+
+  console.log("Yuklangan rasmlar:", uploadedPhotos);
+  console.log("Yuklangan fayl:", uploadedFile);
 });
 
-
+app.use("/uploads", express.static(uploadDir));
 
 app.get("/", (_, res) => res.send("Hello world!"));
 app.use("/admin", AdminRoutes);

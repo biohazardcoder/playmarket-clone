@@ -1,18 +1,12 @@
 import mongoose from "mongoose";
 
 const Client = new mongoose.Schema({
-  phoneNumber: { type: Number, required: true, unique: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  password: { type: String, required: true },
-  address: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  firstName: { type: String, },
+  lastName: { type: String, },
+  password: { type: String, },
+  address: { type: String, },
   avatar: { type: String },
-  orders: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-    },
-  ],
 });
 
 export default mongoose.model("Client", Client);

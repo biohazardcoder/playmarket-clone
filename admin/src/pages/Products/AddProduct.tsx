@@ -9,6 +9,7 @@ export const AddProduct: React.FC = () => {
     price: 0,
     category: "",
     company: "",
+    traler: "",
     sale: 0,
     photos: [],
     file: "",
@@ -17,8 +18,7 @@ export const AddProduct: React.FC = () => {
     age: 0,
     description: "",
     comments: [],
-    device: "Windows",
-
+    device: "windows",
   });
 
   const [imagePreview, setImagePreview] = useState("");
@@ -164,6 +164,14 @@ export const AddProduct: React.FC = () => {
               required
             />
             <input
+              type="text"
+              name="trailer"
+              className="border border-gray-300 rounded-md p-2 w-full mt-2"
+              onChange={handleInputChange}
+              placeholder="Trailer"
+              required
+            />
+            <input
               type="number"
               name="age"
               className="border border-gray-300 rounded-md p-2 w-full mt-2"
@@ -171,7 +179,6 @@ export const AddProduct: React.FC = () => {
               placeholder="Age"
               required
             />
-
           </div>
         </div>
         <div className="text-mainly">
@@ -179,12 +186,12 @@ export const AddProduct: React.FC = () => {
             Device
           </h1>
           <select name="device" className="border p-2 rounded-md text-theme" onChange={handleInputChange}>
-            <option value="Windows">Windows</option>
-            <option value="Phone">Phone</option>
-            <option value="Tablet">Tablet</option>
-            <option value="TV">TV</option>
-            <option value="Chromebook">Chromebook</option>
-            <option value="Watch">Watch</option>
+            <option value="windows">windows</option>
+            <option value="phone">phone</option>
+            <option value="tablet">tablet</option>
+            <option value="tv">tv</option>
+            <option value="chromebook">chromebook</option>
+            <option value="watch">watch</option>
           </select>
         </div>
         <div className="mt-2">

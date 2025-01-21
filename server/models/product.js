@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   category: { type: String, required: true },
   device: { type: String, required: true },
+  trailer: { type: String, required: true },
   company: { type: String, required: true },
   sale: { type: Number },
   photos: [{ type: String, required: true }],
@@ -22,10 +23,5 @@ const ProductSchema = new mongoose.Schema({
     }]
 });
 
-ProductSchema.virtual("total").get(function () {
-  return this.price * this.stock;
-});
-
-ProductSchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("Product", ProductSchema);

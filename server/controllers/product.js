@@ -25,7 +25,14 @@ export const CreateNewProduct = async (req, res) => {
 
 export const GetAllProducts = async (req, res) => {
   try {
-    const { title, category, pageNum, pageSize } = req.query;
+    let { title = "", category = "", pageNum = 1, pageSize = 10 } = req.query;
+
+    pageNum = parseInt(pageNum, 10);
+    pageSize = parseInt(pageSize, 10);
+
+    if (isNaN(pageNum) || pageNum <= 0) pageNum = 1;
+    if (isNaN(pageSize) || pageSize <= 0) pageSize = 10;
+
     const titleRegExp = new RegExp(title, "i");
     const categoryRegExp = new RegExp(category, "i");
 
@@ -39,13 +46,15 @@ export const GetAllProducts = async (req, res) => {
       category: categoryRegExp,
     })
       .skip((pageNum - 1) * pageSize)
-      .limit(parseInt(pageSize));
+      .limit(pageSize);
 
     return res.status(200).json({ data: products, total });
   } catch (error) {
+    console.error("Error in GetAllProducts:", error);
     return sendErrorResponse(res, 500, "Serverdagi ichki xatolik.");
   }
 };
+
 
 export const DeleteProduct = async (req, res) => {
   const { id } = req.params;

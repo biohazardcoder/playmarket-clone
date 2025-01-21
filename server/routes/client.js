@@ -1,7 +1,6 @@
 import express from "express";
 import {
-  ClientLogin,
-  ClientRegister,
+  ClientRegisterOrLogin,
   DeleteClient,
   GetAllClients,
   GetMe,
@@ -13,9 +12,8 @@ import IsAdmin from "../middlewares/IsAdmin.js";
 const router = express.Router();
 
 router.get("/", isExisted, IsAdmin, GetAllClients);
-router.post("/register", ClientRegister);
 router.get("/me", isExisted, GetMe);
-router.post("/login", ClientLogin);
+router.post("/login", ClientRegisterOrLogin);
 router.put("/:id", isExisted, UpdateClient);
 router.delete("/:id", isExisted, DeleteClient);
 

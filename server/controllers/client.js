@@ -1,80 +1,65 @@
 import Client from "../models/client.js";
 import bcrypt from "bcrypt";
-import generateAvatar from "../middlewares/generateAvatar.js";
 import generateToken from "../middlewares/generateToken.js";
 
 const sendErrorResponse = (res, statusCode, message) => {
   return res.status(statusCode).json({ message });
 };
 
-export const ClientRegister = async (req, res) => {
-  const { phoneNumber, firstName, lastName, avatar, address, password } = req.body;
+export const ClientRegisterOrLogin = async (req, res) => {
+  const { email, firstName, lastName, avatar, address, password } = req.body;
 
   try {
-    const existingClient = await Client.findOne({ phoneNumber });
-
-    if (existingClient) {
-      return sendErrorResponse(
-        res,
-        409,
-        "Bu telefon raqamiga ega foydalanuvchi allaqachon mavjud. Iltimos, boshqa raqamdan foydalaning."
-      );
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const avatarPhoto = avatar ? avatar : generateAvatar(firstName, lastName);
-    const newClient = new Client({
-      phoneNumber,
-      firstName,
-      lastName,
-      address,
-      avatar: avatarPhoto,
-      password: hashedPassword,
-    });
-
-    await newClient.save();
-
-    const token = generateToken({ _id: newClient._id, role: "client" });
-
-    return res.status(201).json({
-      message: "Yangi foydalanuvchi muvaffaqiyatli yaratildi!",
-      data: newClient,
-      token,
-    });
-  } catch (error) {
-    return sendErrorResponse(res, 500, error);
-  }
-};
-
-export const ClientLogin = async (req, res) => {
-  const { phoneNumber, password } = req.body;
-
-  try {
-    const client = await Client.findOne({ phoneNumber });
+    let client = await Client.findOne({ email });
 
     if (!client) {
-      return sendErrorResponse(
-        res,
-        401,
-        "Bu telefon raqamiga ega foydalanuvchi mavjud emas."
-      );
+      const existingClient = await Client.findOne({ email });
+
+      if (existingClient) {
+        return sendErrorResponse(
+          res,
+          409,
+          "Bu email manzili bilan foydalanuvchi allaqachon mavjud. Iltimos, boshqa emaildan foydalaning."
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      client = new Client({
+        email,
+        firstName,
+        lastName,
+        address,
+        avatar,
+        password: hashedPassword,
+      });
+
+      await client.save();
+
+      const token = generateToken({ _id: client._id, role: "client" });
+
+      return res.status(201).json({
+        message: "Yangi foydalanuvchi muvaffaqiyatli yaratildi!",
+        data: client,
+        token,
+      });
+    } else {
+      const isPasswordValid = await bcrypt.compare(password, client.password);
+
+      if (!isPasswordValid) {
+        return sendErrorResponse(res, 401, "Telefon raqami yoki parol noto'g'ri.");
+      }
+
+      const token = generateToken({ _id: client._id, role: "client" });
+
+      return res.status(200).json({
+        message: "Muvaffaqiyatli ro'yxatdan o'tildi!",
+        client,
+        token,
+      });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, client.password);
-
-    if (!isPasswordValid) {
-      return sendErrorResponse(res, 401, "Telefon raqami yoki parol noto'g'ri.");
-    }
-
-    const token = generateToken({ _id: client._id, role: "client" });
-
-    return res.status(200).json({
-      message: "Muvaffaqiyatli ro'yxatdan o'tildi!",
-      client,
-      token,
-    });
   } catch (error) {
-    return sendErrorResponse(res, 500, "Serverdagi ichki xatolik.");
+    return sendErrorResponse(res, 500, error);
   }
 };
 

@@ -16,7 +16,7 @@ router.get("/", GetAllProducts);
 router.get("/:id", GetOneProduct);
 router.post("/create", isExisted, IsAdmin, CreateNewProduct);
 router.delete("/:id", isExisted, IsAdmin, DeleteProduct);
-router.put("/:id", isExisted, IsAdmin, UpdateProduct);
+router.put("/:id", isExisted, UpdateProduct);
 router.post("/get-products-by-ids", GetProductsByIds);
 
 

@@ -113,14 +113,6 @@ export const DeleteClient = async (req, res) => {
 export const GetMe = async (req, res) => {
   try {
     const foundClient = await Client.findById(req.userInfo.userId)
-      .populate({
-        path: "orders",
-        populate: {
-          path: "products.productId",
-          model: "Product",
-        },
-      });
-
     if (!foundClient) {
       return res.status(404).json({ message: "Mijoz topilmadi." });
     }

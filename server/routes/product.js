@@ -5,6 +5,7 @@ import {
   GetAllProducts,
   GetOneProduct,
   GetProductsByIds,
+  HandleComment,
   UpdateProduct,
 } from "../controllers/product.js";
 import isExisted from "../middlewares/isExisted.js";
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get("/", GetAllProducts);
 router.get("/:id", GetOneProduct);
 router.post("/create", isExisted, IsAdmin, CreateNewProduct);
+router.post("/comment", HandleComment);
 router.delete("/:id", isExisted, IsAdmin, DeleteProduct);
 router.put("/:id", isExisted, UpdateProduct);
 router.post("/get-products-by-ids", GetProductsByIds);

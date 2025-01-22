@@ -16,10 +16,9 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String, required: true },
   comments: [
     {
-      type: String,
-      user: mongoose.Schema.Types.ObjectId,
-      ref: "Client",
-      star: Number,
+      user: { type: Object, },
+      text: { type: String, required: true },
+      like: { type: Number, default: 0, min: 0, max: 5 },
     }]
 });
 

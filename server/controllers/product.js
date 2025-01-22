@@ -137,5 +137,29 @@ export const GetProductsByIds = async (req, res) => {
   }
 };
 
+export const HandleComment = async (req, res) => {
+  try {
+    const { productId, user, text, like } = req.body
 
+    if (!productId || !user || !text) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
+    const product = await Product.findById(productId)
+    if (!product) {
+      return res.status(404).json({ message: "Not Found" });
+
+    }
+    const newComment = {
+      user,
+      text,
+      like: like >= 0 && like <= 5 ? like : 0
+    }
+    product.comments.push(newComment)
+    await product.save()
+
+    res.status(200).json({ message: "Comment added successfully", product });
+  } catch (error) {
+    return sendErrorResponse(res, 500, error);
+  }
+}

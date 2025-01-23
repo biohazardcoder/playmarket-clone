@@ -26,7 +26,6 @@ export const Sidebar: React.FC = () => {
             { path: "/", label: "Dashboard" },
             { path: "/admins", label: "Admins" },
             { path: "/games", label: "Games" },
-            { path: "/orders", label: "Buyurtmalar" },
           ].map((link) => (
             <li key={link.path}>
               <NavLink

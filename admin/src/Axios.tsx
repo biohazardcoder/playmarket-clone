@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 const token = Cookies.get("admin");
 
 const instance = axios.create({
-    baseURL: "http://localhost:4000",
+    baseURL: "https://server-playmarket-bo.onrender.com",
     headers: {
         Authorization: token,
     },

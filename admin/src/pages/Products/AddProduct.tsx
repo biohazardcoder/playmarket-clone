@@ -52,11 +52,11 @@ export const AddProduct: React.FC = () => {
 
       setImagePreview(data.photos[0]);
       setFilePreview(data.file);
-      console.log("Fayl yuklandi:", data);
     } catch (err) {
       console.log("Fayl yuklashda xatolik:", err);
     }
   };
+
 
 
 
